@@ -17,7 +17,7 @@ def products(request):
     # file_path = os.path.join(MODULE_DIR, 'fixtures/goods.json')
     context = {
         'title': 'Geekshop - Каталог',
-        'categorys': ProductCategory.objects.all(),
+        'categories': ProductCategory.objects.all(),
         'products': Product.objects.all()
     }
 
