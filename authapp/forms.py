@@ -6,16 +6,17 @@ from authapp.validator import validate_name
 
 
 class UserLoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(),validators=[validate_name])
     class Meta:
         model = User
         fields = ('username', 'password')
-    # username = forms.CharField(widget=forms.TextInput(),validators=[validate_name])
-    #
-    # def clean_username(self):
-    #     data = self.cleaned_data['username']
-    #     if not data.isalpha():
-    #         raise ValidationError('Имя пользователя не может содержать цирфы')
-    #     return data
+
+
+    def clean_username(self):
+        data = self.cleaned_data['username']
+        if not data.isalpha():
+            raise ValidationError('Имя пользователя не может содержать цирфы')
+        return data
 
 
     def __init__(self, *args, **kwargs):
@@ -27,10 +28,11 @@ class UserLoginForm(AuthenticationForm):
 
 
 class UserRegisterForm(UserCreationForm):
+    username = forms.CharField()
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
-        # username = forms.CharField()
+
 
     def __init__(self, *args, **kwargs):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
