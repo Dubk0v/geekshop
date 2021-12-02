@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="col-lg-5">
-                {% if form.non_field_errors  or messages %}
+        {% if form.non_field_errors  or messages %}
         <div class="alert {% if messages %} alert-success {% else %} alert-warning {% endif %} alert-dismissible fade show"
              role="alert" style="margin-top: 50px;">
 
@@ -36,7 +36,7 @@
                         <label class="small mb-1" for="{{ form.password.id_for_label }}">Пароль</label>
                         {{ form.password }}
                     </div>
-{#                    {{ form.as_p }}#}
+                    {#                    {{ form.as_p }}#}
                     <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                         <a class="small" href="#">Забыли пароль?</a>
                         <input class="btn btn-primary" type="submit" value="Авторизоваться">
