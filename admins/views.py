@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView, TemplateView
-from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, CategoryUpdateFormAdmin
+from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, CategoryUpdateFormAdmin, ProductAdminRegisterForm
 from authapp.models import User
 from mainapp.mixin import BaseClassContextMixin, CustomDispatchMixin
 from mainapp.models import Product, ProductCategory
@@ -142,3 +142,44 @@ class ProductListView(ListView,BaseClassContextMixin,CustomDispatchMixin):
 
     def get_queryset(self):
         return Product.objects.all().select_related()
+
+
+class ProductCreateView(CreateView,BaseClassContextMixin, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-product-create.html'
+    form_class = ProductAdminRegisterForm
+    success_url = reverse_lazy('admins:admin_product')
+    title = 'Админка | Создание товара'
+
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super(ProductCreateView, self).get_context_data(**kwargs)
+    #     context['title'] = 'Админка | Создание товара'
+    #     return context
+
+
+class ProductUpdateView(UpdateView, BaseClassContextMixin, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-product-update-delete.html'
+    form_class = ProductAdminRegisterForm
+    success_url = reverse_lazy('admins:admin_product')
+    title = 'Админка | Обновление информации о товаре'
+
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super(ProductUpdateView, self).get_context_data(**kwargs)
+    #     context['title'] = 'Админка | Обновление информации о товаре'
+    #     return context
+
+
+class ProductDeleteView(DeleteView, BaseClassContextMixin, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-product-read.html'
+    success_url = reverse_lazy('admins:admin_product')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.is_active == True:
+            self.object.is_active = False
+        else:
+            self.object.is_active = True
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())

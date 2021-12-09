@@ -1,7 +1,6 @@
 {% extends 'admins/base.html' %}
 
 {% block content %}
-
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid">
@@ -57,14 +56,14 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <form action="{#% url 'admins:admin_category_delete' category.id %#}"
+                                            <form action="{#% url 'admins:admin_product_delete' product.id %#}"
                                                   method="post">
                                                 {% csrf_token %}
                                                 <input class="btn btn-danger btn-block" type="submit" value="Удалить">
                                             </form>
                                         </td>
                                         <td>
-                                            <form action="{#% url 'admins:admin_category_update' category.id %#}"
+                                            <form action="{#% url 'admins:admin_product_update' product.id %#}"
                                                   method="post">
                                                 {% csrf_token %}
                                                 <input class="btn btn-success btn-block" type="submit" value="Изменить">
@@ -77,7 +76,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="{% url 'admins:admin_users_create' %}">
+                        <a href="{% url 'admins:admin_product_create' %}">
                             <button class="btn btn-success">Создать продукт</button>
                         </a>
                     </div>
