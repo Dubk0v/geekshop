@@ -1,7 +1,7 @@
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.urls import reverse, reverse_lazy
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfilerForm
@@ -46,13 +46,25 @@ class register(FormView, BaseClassContextMixin):
     success_url = reverse_lazy('authapp:login')
     title = 'Geekshop | Регистрация'
 
+    # def post(self, request, *args, **kwargs):
+    #     form = self.form_class(data=request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         messages.success(request, 'Вы успешно зарегистрировались.')
+    #         return redirect(self.success_url)
+    #     return redirect(self.success_url)
     def post(self, request, *args, **kwargs):
+
         form = self.form_class(data=request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Вы успешно зарегистрировались.')
-            return redirect(self.success_url)
-        return redirect(self.success_url)
+            messages.set_level(request, messages.SUCCESS)
+            messages.success(request, 'Вы успешно зарегистрировались!')
+            return HttpResponseRedirect(reverse('authapp:login'))
+        else:
+            messages.set_level(request, messages.ERROR)
+            messages.error(request, form.errors)
+        return render(request, self.template_name, {'form': form})
 
 
 # def register(request):
@@ -73,26 +85,24 @@ class register(FormView, BaseClassContextMixin):
 #     return render(request, 'authapp/register.html', context)
 
 class profile(UpdateView,BaseClassContextMixin,UserDispatchMixin):
-    model = User
     template_name = 'authapp/profile.html'
     form_class = UserProfilerForm
     success_url = reverse_lazy('authapp:profile')
     title = 'Geekshop | Профайл'
 
-    # def get_object(self, queryset=None):
-    #     return get_object_or_404(User, pk=self.request.user.pk)
+    def get_object(self, *args, **kwargs):
+        return get_object_or_404(User, pk=self.request.user.pk)
+
+    def form_valid(self, form):
+        messages.set_level(self.request,messages.SUCCESS)
+        messages.success(self.request, "Вы успешно зарегистрировались")
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super(profile, self).get_context_data(**kwargs)
         context['baskets'] = Basket.objects.filter(user = self.request.user)
         return context
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(data=request.POST,files=request.FILES, instance=self.get_object())
-        if form.is_valid():
-            form.save()
-            return redirect(self.success_url)
-        return redirect(self.success_url)
 
 # @login_required
 # def profile(request):
