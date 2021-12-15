@@ -14,5 +14,5 @@ urlpatterns = [
     path('register/', register.as_view(), name='register'),
     path('profile/', profile.as_view(), name='profile'),
     path('logout/', logout.as_view(), name='logout'),
-
+    path('verify/<str:email>/<str:activate_key>/', register.verify, name='verify')
 ]
