@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.urls import reverse, reverse_lazy
-from authapp.forms import UserLoginForm, UserRegisterForm, UserProfilerForm
+from authapp.forms import UserLoginForm, UserRegisterForm, UserProfilerForm, UserProfileEditForm
 from baskets.models import Basket
 from authapp.models import User
 from mainapp.mixin import BaseClassContextMixin, CustomDispatchMixin, UserDispatchMixin
@@ -122,6 +122,18 @@ class profile(UpdateView,BaseClassContextMixin,UserDispatchMixin):
         messages.success(self.request, "Вы успешно зарегистрировались")
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
+
+    def post(self, request, *args, **kwargs):
+        form = UserProfilerForm(data=request.POST,files=request.FILES,instance=request.user)
+        profile_form = UserProfileEditForm(request.POST,instance=request.user.userprofile)
+        if form.is_valid() and profile_form.is_valid():
+            form.save()
+        return redirect(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super(profile, self).get_context_data(**kwargs)
+        context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
+        return context
 
     # def get_context_data(self, **kwargs):
     #     context = super(profile, self).get_context_data(**kwargs)
