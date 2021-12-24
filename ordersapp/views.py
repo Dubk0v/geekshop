@@ -7,7 +7,8 @@ from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, DeleteView, UpdateView
-
+from django.db.models.signals import pre_save, pre_delete
+from django.dispatch import receiver
 from baskets.models import Basket
 from mainapp.mixin import BaseClassContextMixin
 from ordersapp.forms import OrderForm, OrderItemsForm
@@ -43,7 +44,7 @@ class OrderCreate(CreateView, BaseClassContextMixin):
                     form.initial['product'] = basket_item[num].product
                     form.initial['quantity'] = basket_item[num].quantity
                     form.initial['price'] = basket_item[num].product.price
-                # basket_item.delete()
+                basket_item.delete()
             else:
                 formset = OrderFormSet()
         context['orderitems'] = formset
@@ -116,3 +117,21 @@ def order_forming_complete(request, pk):
     order.status = Order.SEND_TO_PROCEED
     order.save()
     return HttpResponseRedirect(reverse('orders:list'))
+
+
+@receiver(pre_save, sender=Basket)
+@receiver(pre_save, sender=OrderItem)
+def product_quantity_update_save(sender, instance, **kwargs):
+    if instance.pk:
+        get_item = instance.get_item(int(instance.pk))
+        instance.product.quantity -= instance.quantity - get_item
+    else:
+        instance.product.quantity -= instance.quantity
+    instance.product.save()
+
+
+@receiver(pre_delete, sender=Basket)
+@receiver(pre_delete, sender=OrderItem)
+def product_quantity_update_delete(sender, instance, **kwargs):
+    instance.product.quantity += instance.quantity
+    instance.save()
