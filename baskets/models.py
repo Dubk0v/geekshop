@@ -6,15 +6,15 @@ from authapp.models import User
 from mainapp.models import Product
 
 
-# class BasketQuerySet(models.QuerySet):
-#     def delete(self, *args, **kwargs):
-#         for item in self:
-#             item.product.quantity += item.quantity
-#             item.product.save()
-#         super(BasketQuerySet, self).delete(*args, **kwargs)
+class BasketQuerySet(models.QuerySet):
+    def delete(self, *args, **kwargs):
+        for item in self:
+            item.product.quantity += item.quantity
+            item.product.save()
+        super(BasketQuerySet, self).delete(*args, **kwargs)
 
 class Basket(models.Model):
-    # objects = BasketQuerySet.as_manager()
+    objects = BasketQuerySet.as_manager()
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
@@ -27,10 +27,10 @@ class Basket(models.Model):
     def sum(self):
         return self.quantity * self.product.price
 
-    # @property
-    # def get_baskets(self):
-    #     baskets = Basket.objects.filter(user=self.user)
-    #     return baskets
+    @property
+    def get_baskets(self):
+        baskets = Basket.objects.filter(user=self.user)
+        return baskets
 
     def total_sum(self):
         baskets = Basket.objects.filter(user=self.user)
