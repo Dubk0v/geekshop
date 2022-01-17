@@ -1,6 +1,7 @@
 
 from django.urls import path
 from mainapp.views import products, ProductDetail
+from django.views.decorators.cache import cache_page
 
 app_name = 'mainapp'
 urlpatterns = [
