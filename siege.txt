@@ -1,0 +1,17 @@
+(env) root@134-0-115-226:/home/django/geekshop# siege -f url.txt -d1 -r2 -c2 
+** SIEGE 4.0.4
+** Preparing 2 concurrent users for battle.
+The server is now under siege...
+Transactions:		          60 hits
+Availability:		      100.00 %
+Elapsed time:		        1.47 secs
+Data transferred:	       13.21 MB
+Response time:		        0.02 secs
+Transaction rate:	       40.82 trans/sec
+Throughput:		        8.99 MB/sec
+Concurrency:		        0.63
+Successful transactions:          60
+Failed transactions:	           0
+Longest transaction:	        0.29
+Shortest transaction:	        0.00
+ 
