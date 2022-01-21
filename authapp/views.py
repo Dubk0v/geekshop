@@ -12,6 +12,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import ListView, FormView, UpdateView
 from django.conf import settings
 from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
 
 
 class login(LoginView, BaseClassContextMixin):
@@ -19,6 +20,11 @@ class login(LoginView, BaseClassContextMixin):
     form_class = UserLoginForm
     # success_url = reverse_lazy('index')
     title = 'Geekshop - Авторизация'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('authapp:login'))
 
 # def login(request):
 #     if request.method == 'POST':
@@ -123,6 +129,7 @@ class profile(UpdateView,BaseClassContextMixin,UserDispatchMixin):
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
+    # @csrf_exempt
     def post(self, request, *args, **kwargs):
         form = UserProfilerForm(data=request.POST,files=request.FILES,instance=request.user)
         profile_form = UserProfileEditForm(request.POST,instance=request.user.userprofile)
