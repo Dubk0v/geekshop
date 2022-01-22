@@ -1,0 +1,13 @@
+http://134.0.115.226
+http://134.0.115.226/users/login/
+http://134.0.115.226/products/
+http://134.0.115.226/users/profile/
+http://134.0.115.226/orders/
+http://134.0.115.226/admins/
+http://134.0.115.226/admins/users/
+http://134.0.115.226/admins/users-update/1
+http://134.0.115.226/admins/product-categories/
+http://134.0.115.226/admins/product-categories-update/1
+http://134.0.115.226/admins/products/
+http://134.0.115.226/admins/products-update/1
+http://134.0.115.226/users/logout/
